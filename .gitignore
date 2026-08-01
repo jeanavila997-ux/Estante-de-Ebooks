@@ -1,0 +1,38 @@
+# Conteúdo editorial pendente de revisão, aprovação e licença
+/conteudo/*
+!/conteudo/README.md
+/Plano e Ideias/arquivos variados/
+/Plano e Ideias/lista-de-conteudos-ebook.md
+
+# Backups e materiais locais de clientes
+/backups/
+**/[Cc]liente*/
+**/[Cc]lientes*/
+
+# Arquivos editoriais e pacotes não aprovados fora das áreas acima
+*.epub
+*.pdf
+!plano-estante-de-ebooks.pdf
+!Plano e Ideias/plano-estante-de-ebooks.pdf
+*.zip
+*.tar
+*.gz
+
+# Segredos e configuração local
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+
+# Dependências e artefatos de desenvolvimento
+node_modules/
+dist/
+build/
+coverage/
+.DS_Store
+Thumbs.db
