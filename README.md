@@ -1,16 +1,20 @@
 # Estante de Ebooks
 
-Esta pasta funciona como centro organizacional do projeto. Os projetos existentes `EstanteApp` e `tdah-descomplicado-docs` permanecem separados e não foram copiados, movidos ou modificados.
+Esta pasta funciona como centro organizacional do projeto. O código atualizado do `EstanteApp` está integrado em `app/`; os materiais editoriais continuam separados e sujeitos ao fluxo de revisão e aprovação.
 
 ## Estrutura
 
-- `app/` — futuras versões, pacotes ou entregas do aplicativo.
+- `app/` — aplicativo desktop Electron/React e seu modo móvel PWA para rede local.
 - `conteudo/` — ebooks, textos e demais conteúdos editoriais.
 - `documentacao/` — planos, decisões, manuais e documentação técnica.
 - `midia/` — imagens, capas, ícones, vídeos e outros materiais visuais.
 - `backups/` — cópias de segurança organizadas e identificadas por data.
 
 Antes de adicionar arquivos, confirme a pasta adequada e evite duplicar dados sem necessidade.
+
+## Aplicativo
+
+As instruções de instalação, execução e arquitetura estão em `app/README.md` e `app/AGENTS.md`. Para abrir no Windows, use `app/ABRIR-ESTANTE.bat`.
 
 ## Fluxo para novos ebooks
 

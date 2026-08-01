@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <title>Estante de Ebooks</title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#8b3a1d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Estante" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <style>
+    :root {
+      --terr: #8b3a1d; --terr2: #a8481f; --cream: #f4ecd8; --bg: #efe7d4;
+      --ink: #211a12; --muted: #7a6f5d; --card: #fbf6ea; --line: #e0d5bd;
+      --ok: #3f7d4f; --blue: #2f6fb0;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: -apple-system, system-ui, "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--ink);
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+    header {
+      position: sticky; top: 0; z-index: 5;
+      background: var(--terr); color: var(--cream);
+      padding: calc(env(safe-area-inset-top) + 14px) 18px 14px;
+      display: flex; align-items: center; gap: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    }
+    header .logo { width: 30px; height: 30px; border-radius: 7px; background: var(--cream);
+      display: grid; place-items: center; font-size: 17px; }
+    header h1 { font-size: 17px; margin: 0; font-weight: 700; flex: 1; }
+    header button { background: rgba(255,255,255,.15); color: var(--cream); border: 0;
+      border-radius: 8px; padding: 7px 11px; font-size: 13px; }
+    #offline-tag { display: none; background: #b23b2e; color: #fff; font-size: 10px;
+      font-weight: 700; text-transform: uppercase; padding: 3px 7px; border-radius: 6px; }
+    main { padding: 16px; max-width: 720px; margin: 0 auto; }
+
+    /* Login */
+    .login { max-width: 360px; margin: 12vh auto 0; text-align: center; }
+    .login .bigicon { width: 74px; height: 74px; border-radius: 18px; margin: 0 auto 18px;
+      background: var(--terr); display: grid; place-items: center; font-size: 38px; color: var(--cream); }
+    .login h2 { margin: 0 0 4px; }
+    .login p { color: var(--muted); margin: 0 0 22px; font-size: 14px; }
+    input {
+      width: 100%; padding: 14px; border: 1px solid var(--line); border-radius: 12px;
+      font-size: 16px; margin-bottom: 12px; background: var(--card); color: var(--ink);
+    }
+    .btn {
+      width: 100%; padding: 14px; border: 0; border-radius: 12px; font-size: 16px; font-weight: 600;
+      background: var(--terr); color: var(--cream);
+    }
+    .btn:active { background: var(--terr2); }
+    .err { color: #b23b2e; font-size: 14px; margin: 4px 0 12px; min-height: 18px; }
+
+    /* Catálogo */
+    .cat { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted);
+      margin: 22px 4px 10px; font-weight: 700; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .book {
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+      padding: 14px; min-height: 128px; display: flex; flex-direction: column;
+      justify-content: space-between; box-shadow: 0 4px 10px -6px rgba(0,0,0,.25);
+    }
+    .book:active { transform: scale(.98); }
+    .book .kind { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--terr); font-weight: 700; }
+    .book .t { font-weight: 700; font-size: 15px; line-height: 1.2; margin: 6px 0; }
+    .book .fmt { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+    .empty { text-align: center; color: var(--muted); font-style: italic; padding: 40px 0; }
+
+    /* Leitor */
+    .reader { position: fixed; inset: 0; z-index: 20; background: var(--bg); display: none; flex-direction: column; }
+    .reader.open { display: flex; }
+    .reader .bar { background: var(--terr); color: var(--cream); display: flex; align-items: center; gap: 10px;
+      padding: calc(env(safe-area-inset-top) + 12px) 14px 12px; }
+    .reader .bar b { flex: 1; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .reader .bar button { background: rgba(255,255,255,.18); color: var(--cream); border: 0; border-radius: 8px; padding: 8px 12px; font-size: 14px; }
+    .reader iframe { flex: 1; border: 0; width: 100%; background: #fff; min-height: 100vh; }
+    .spin { text-align: center; padding: 40px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="offline" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#8a4030;color:#f4ecd8;padding:10px 16px;text-align:center;font-size:13px;z-index:30;">
+    Sem conexão. Alguns recursos podem estar indisponíveis.
+  </div>
+
+  <div class="reader" id="reader">
+    <div class="bar">
+      <button onclick="closeReader()">‹ Voltar</button>
+      <b id="reader-title"></b>
+    </div>
+    <iframe id="reader-frame" sandbox="allow-same-origin allow-scripts allow-popups"></iframe>
+  </div>
+
+  <script>
+    const API = "";
+    const READER_SANDBOX = "allow-same-origin allow-scripts allow-popups";
+    let token = localStorage.getItem("estante-token") || "";
+    let me = null;
+
+    const el = (id) => document.getElementById(id);
+    const esc = (s) => (s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    let offline = false;
+    function setOffline(isOffline) {
+      offline = isOffline;
+      const el = document.getElementById("offline");
+      if (el) el.style.display = isOffline ? "block" : "none";
+    }
+
+    async function api(path, opts = {}) {
+      const headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
+      if (token) headers["Authorization"] = "Bearer " + token;
+      let r;
+      try {
+        r = await fetch(API + path, Object.assign({}, opts, { headers }));
+        setOffline(false);
+      } catch (e) {
+        setOffline(true);
+        throw new Error("Sem conexão com o servidor. Verifique a rede.");
+      }
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.error || ("Erro " + r.status));
+      return data;
+    }
+
+    function renderLogin(msg) {
+      el("app").innerHTML = `
+        <main>
+          <div class="login">
+            <div class="bigicon">📖</div>
+            <h2>Estante de Ebooks</h2>
+            <p>Entre para acessar seus ebooks</p>
+            <input id="u" placeholder="Usuário" autocapitalize="none" autocorrect="off" />
+            <input id="p" placeholder="Senha" type="password" />
+            <div class="err" id="loginerr">${esc(msg || "")}</div>
+            <button class="btn" id="loginbtn">Entrar</button>
+          </div>
+        </main>`;
+      el("loginbtn").onclick = doLogin;
+      el("p").addEventListener("keydown", (e) => { if (e.key === "Enter") doLogin(); });
+    }
+
+    async function doLogin() {
+      const username = el("u").value.trim();
+      const password = el("p").value;
+      el("loginerr").textContent = "";
+      el("loginbtn").textContent = "Entrando...";
+      try {
+        const r = await api("/api/login", { method: "POST", body: JSON.stringify({ username, password }) });
+        token = r.token; me = r.user;
+        localStorage.setItem("estante-token", token);
+        loadCatalog();
+      } catch (e) {
+        el("loginbtn").textContent = "Entrar";
+        el("loginerr").textContent = e.message;
+      }
+    }
+
+    function logout() {
+      token = ""; me = null;
+      localStorage.removeItem("estante-token");
+      renderLogin();
+    }
+
+    async function loadCatalog() {
+      el("app").innerHTML = `<header><div class="logo">📖</div><h1>Carregando...</h1></header><div class="spin">…</div>`;
+      let data;
+      try {
+        data = await api("/api/bootstrap");
+      } catch (e) {
+        return renderLogin(e.message.match(/sess|token/i) ? "Sessão expirada, entre novamente." : e.message);
+      }
+      me = data.user;
+      const readable = data.ebooks.filter((e) => e.hasFile);
+      const byCat = {};
+      readable.forEach((e) => { (byCat[e.category_id] = byCat[e.category_id] || []).push(e); });
+
+      let html = `<header><div class="logo">📖</div><h1>Estante de Ebooks</h1><span id="offline-tag">offline</span><button onclick="logout()">Sair</button></header><main>`;
+      const cats = data.categories.filter((c) => byCat[c.id] && byCat[c.id].length);
+      if (!cats.length) {
+        html += `<div class="empty">Nenhum ebook disponível ainda.</div>`;
+      }
+      for (const c of cats) {
+        html += `<div class="cat">${esc(c.code)} · ${esc(c.title)}</div><div class="grid">`;
+        for (const e of byCat[c.id]) {
+          html += `<div class="book" data-id="${e.id}" data-format="${esc(e.format)}" data-title="${esc(e.title)}">
+            <div>${e.kind ? `<div class="kind">${esc(e.kind)}</div>` : ""}<div class="t">${esc(e.title)}</div></div>
+            <div class="fmt">${esc(e.format || "arquivo")}</div>
+          </div>`;
+        }
+        html += `</div>`;
+      }
+      html += `</main>`;
+      el("app").innerHTML = html;
+      document.querySelectorAll(".book").forEach((book) => {
+        book.addEventListener("click", () => {
+          openBook(Number(book.dataset.id), book.dataset.format, book.dataset.title);
+        });
+      });
+    }
+
+    async function openBook(id, format, title) {
+      el("reader-title").textContent = title;
+      const frame = el("reader-frame");
+      el("reader").classList.add("open");
+
+      if (format === "pdf") {
+        const fileUrl = `/api/ebooks/${id}/file?t=${encodeURIComponent(token)}`;
+        // Mantém a navegação no leitor integrado. Abrir em nova janela era
+        // bloqueado por alguns navegadores e fazia o clique parecer não funcionar.
+        frame.removeAttribute("srcdoc");
+        frame.removeAttribute("sandbox");
+        frame.src = fileUrl;
+        return;
+      }
+
+      frame.setAttribute("sandbox", READER_SANDBOX);
+      frame.src = "about:blank";
+      frame.srcdoc = `<div style="padding:24px;color:#777;font-family:sans-serif">Carregando…</div>`;
+      try {
+        const c = await api(`/api/ebooks/${id}/content`);
+        let body = c.data;
+        const isExternalUrl = body.startsWith("http://") || body.startsWith("https://");
+        if (isExternalUrl) {
+          frame.removeAttribute("srcdoc");
+          frame.src = body;
+          return;
+        }
+        frame.srcdoc = `<!doctype html><html><head><meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <base target="_blank">
+          <style>body{font-family:-apple-system,system-ui,sans-serif;line-height:1.6;padding:20px;color:#211a12;max-width:44em;margin:0 auto}
+          img{max-width:100%}pre{background:#f0ead9;padding:12px;border-radius:8px;overflow:auto}
+          code{background:#f0ead9;padding:2px 5px;border-radius:4px}
+          table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px}
+          h1,h2,h3{line-height:1.25}a{color:#8b3a1d}</style></head><body>${body}</body></html>`;
+      } catch (e) {
+        frame.srcdoc = `<div style="padding:24px;color:#b23b2e;font-family:sans-serif">${esc(e.message)}</div>`;
+      }
+    }
+
+    function closeReader() {
+      el("reader").classList.remove("open");
+      const f = el("reader-frame");
+      f.src = "about:blank";
+      f.removeAttribute("srcdoc");
+      f.setAttribute("sandbox", READER_SANDBOX);
+    }
+
+    // Markdown mínimo (títulos, negrito, itálico, listas, código, links)
+    function mdToHtml(md) {
+      const lines = md.replace(/\r/g, "").split("\n");
+      let out = "", inList = false, inCode = false;
+      const inline = (t) => esc(t)
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+      for (let raw of lines) {
+        if (/^```/.test(raw)) {
+          if (inList) { out += "</ul>"; inList = false; }
+          inCode = !inCode; out += inCode ? "<pre>" : "</pre>"; continue;
+        }
+        if (inCode) { out += esc(raw) + "\n"; continue; }
+        const h = /^(#{1,6})\s+(.*)$/.exec(raw);
+        const li = /^\s*[-*]\s+(.*)$/.exec(raw);
+        if (h) { if (inList) { out += "</ul>"; inList = false; } const n = h[1].length; out += `<h${n}>${inline(h[2])}</h${n}>`; }
+        else if (li) { if (!inList) { out += "<ul>"; inList = true; } out += `<li>${inline(li[1])}</li>`; }
+        else if (raw.trim() === "") { if (inList) { out += "</ul>"; inList = false; } }
+        else { if (inList) { out += "</ul>"; inList = false; } out += `<p>${inline(raw)}</p>`; }
+      }
+      if (inList) out += "</ul>";
+      if (inCode) out += "</pre>";
+      return out;
+    }
+
+    // PWA service worker (só registra em contexto seguro: HTTPS ou localhost)
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+
+    // Início
+    if (token) loadCatalog(); else renderLogin();
+  </script>
+</body>
+</html>

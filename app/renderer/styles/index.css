@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 32% 92%;
+    --foreground: 30 12% 8%;
+    --card: 40 32% 96%;
+    --card-foreground: 30 12% 8%;
+    --popover: 40 32% 96%;
+    --popover-foreground: 30 12% 8%;
+    --primary: 14 65% 33%;
+    --primary-foreground: 40 32% 96%;
+    --secondary: 36 28% 82%;
+    --secondary-foreground: 30 12% 8%;
+    --muted: 36 22% 88%;
+    --muted-foreground: 30 8% 42%;
+    --accent: 38 52% 52%;
+    --accent-foreground: 30 12% 8%;
+    --destructive: 4 48% 46%;
+    --destructive-foreground: 40 32% 96%;
+    --border: 36 22% 78%;
+    --input: 36 22% 78%;
+    --ring: 14 65% 33%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 30 12% 8%;
+    --foreground: 40 32% 92%;
+    --card: 30 10% 12%;
+    --card-foreground: 40 32% 92%;
+    --popover: 30 10% 12%;
+    --popover-foreground: 40 32% 92%;
+    --primary: 14 60% 45%;
+    --primary-foreground: 40 32% 96%;
+    --secondary: 30 8% 18%;
+    --secondary-foreground: 40 32% 92%;
+    --muted: 30 8% 18%;
+    --muted-foreground: 38 12% 64%;
+    --accent: 38 52% 52%;
+    --accent-foreground: 30 12% 8%;
+    --destructive: 4 48% 46%;
+    --destructive-foreground: 40 32% 96%;
+    --border: 30 8% 22%;
+    --input: 30 8% 22%;
+    --ring: 14 60% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  html, body, #root {
+    @apply h-full w-full;
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* Tipografia dos leitores de HTML/Markdown */
+@layer components {
+  .reader-content {
+    @apply text-[15px] leading-relaxed;
+  }
+  .reader-content h1 {
+    @apply text-2xl font-serif font-bold mt-8 mb-4;
+  }
+  .reader-content h2 {
+    @apply text-xl font-serif font-bold mt-6 mb-3;
+  }
+  .reader-content h3 {
+    @apply text-lg font-semibold mt-5 mb-2;
+  }
+  .reader-content p {
+    @apply my-3;
+  }
+  .reader-content ul,
+  .reader-content ol {
+    @apply my-3 pl-6;
+  }
+  .reader-content ul {
+    @apply list-disc;
+  }
+  .reader-content ol {
+    @apply list-decimal;
+  }
+  .reader-content li {
+    @apply my-1;
+  }
+  .reader-content a {
+    @apply text-primary underline;
+  }
+  .reader-content blockquote {
+    @apply border-l-4 border-accent pl-4 italic text-muted-foreground my-4;
+  }
+  .reader-content code {
+    @apply bg-muted px-1.5 py-0.5 rounded text-[13px] font-mono;
+  }
+  .reader-content pre {
+    @apply bg-muted p-4 rounded-md overflow-x-auto my-4;
+  }
+  .reader-content pre code {
+    @apply bg-transparent p-0;
+  }
+  .reader-content img {
+    @apply max-w-full rounded-md my-4;
+  }
+  .reader-content table {
+    @apply w-full border-collapse my-4 text-sm;
+  }
+  .reader-content th,
+  .reader-content td {
+    @apply border border-border px-3 py-1.5 text-left;
+  }
+  .reader-content th {
+    @apply bg-muted font-semibold;
+  }
+  .reader-content hr {
+    @apply my-6 border-border;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted)) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+}
