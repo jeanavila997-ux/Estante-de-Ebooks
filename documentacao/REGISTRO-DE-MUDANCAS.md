@@ -16,3 +16,14 @@
 - Integrado em `app/` o código atualizado do aplicativo Electron/React.
 - Incluídos a administração de ebooks e categorias, leitores de PDF/HTML/Markdown, serviços compartilháveis e o modo móvel PWA para rede local.
 - Mantidos fora do repositório dados locais, segredos, dependências instaladas, builds, instaladores e materiais editoriais ainda não aprovados.
+
+## 26/11/2026 — Design de telas: avisos educativos e leitor paginado
+
+- Avisos educativos com os textos do design em Login, Dashboard, Categoria e rodapé do leitor (`app/renderer/routes/`).
+- Leitor paginado para todos os formatos, com virada de página 3D de 0,8 s e numeração no pé da folha:
+  - PDF: cada página do documento é uma folha (`PdfReader.tsx`).
+  - HTML e Markdown: o texto flui em colunas CSS da largura da folha e quebra linha a linha, sem páginas vazias.
+  - Controles e progresso compartilhados em `components/reader/PagedReader.tsx`; animações em `tailwind.config.ts`.
+- `components/reader/ScrollReader.tsx` ficou sem uso e pode ser removido em uma mudança separada.
+- Não implementados nesta etapa: ganchos de 6 segundos e as duas pausas ativas (mini-teste e playground). Dependem de decisão sobre onde esse conteúdo entra nos ebooks.
+- Validado com `npm run typecheck` e `npm run build`, e no navegador com um `window.api` simulado (paginação, virada, PDF e layout de celular).

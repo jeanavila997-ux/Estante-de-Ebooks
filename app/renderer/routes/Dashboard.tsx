@@ -4,6 +4,7 @@ import {
   BookOpen,
   CheckCircle2,
   FileText,
+  Info,
   Send,
   HelpCircle,
   PenLine,
@@ -56,6 +57,18 @@ export default function Dashboard() {
             : "Sua estante de ebooks disponíveis."}
         </p>
       </header>
+
+      <div
+        role="note"
+        className="flex items-start gap-3 rounded-lg border border-wip/50 bg-wip/10 px-4 py-3.5 text-sm"
+      >
+        <Info className="h-5 w-5 shrink-0 mt-0.5 text-wip" />
+        <div>
+          <b>Nada aqui é indicação, prescrição ou diagnóstico.</b> Todo o
+          material é educativo. Qualquer decisão sobre tratamento é única e
+          exclusivamente do seu médico.
+        </div>
+      </div>
 
       <section
         className={cn(

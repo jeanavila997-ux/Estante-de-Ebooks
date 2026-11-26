@@ -101,6 +101,19 @@
   .reader-content blockquote {
     @apply border-l-4 border-accent pl-4 italic text-muted-foreground my-4;
   }
+  /* Paginação em colunas: imagens, tabelas e títulos não se partem entre páginas. */
+  .reader-columns img,
+  .reader-columns pre,
+  .reader-columns table,
+  .reader-columns figure,
+  .reader-columns blockquote {
+    break-inside: avoid;
+  }
+  .reader-columns h1,
+  .reader-columns h2,
+  .reader-columns h3 {
+    break-after: avoid;
+  }
   .reader-content code {
     @apply bg-muted px-1.5 py-0.5 rounded text-[13px] font-mono;
   }
