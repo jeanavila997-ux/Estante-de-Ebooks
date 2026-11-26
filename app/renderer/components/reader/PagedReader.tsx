@@ -42,9 +42,17 @@ function columnStyle(w: number, h: number): CSSProperties {
   } as CSSProperties;
 }
 
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
 export function pageBox(areaW: number, areaH: number): PageBox {
-  const width = Math.max(260, Math.min(560, areaW - 32));
-  const padding = width < 420 ? 24 : 40;
+  const width = Math.max(200, Math.min(560, areaW - 32));
+  const padding = width < 260 ? 12 : width < 420 ? 24 : 40;
   const height = Math.max(
     320,
     Math.min(Math.max(320, areaH - 32), Math.round(width * 1.4))
@@ -95,6 +103,8 @@ export default function PagedReader({
   const [flip, setFlip] = useState<Flip | null>(null);
   const flipTimer = useRef<number | null>(null);
   const lastPct = useRef<number | null>(null);
+  // Página restaurada, congelada na primeira paginação completa.
+  const [anchor, setAnchor] = useState<number | null>(null);
 
   const box = useMemo(() => pageBox(area.w, area.h), [area.w, area.h]);
 
@@ -102,7 +112,14 @@ export default function PagedReader({
   const restored =
     Math.min(total, Math.max(1, Math.round((initialProgress / 100) * total) || 1)) - 1;
   // Derivado no render: a página restaurada já vale na primeira pintura.
-  const index = total === 0 ? 0 : Math.min(total - 1, manual ?? restored);
+  // `anchor` fixa essa página na primeira paginação: imagens que carregam
+  // depois mudam o total, mas não deslocam a leitura.
+  const index =
+    total === 0 ? 0 : Math.min(total - 1, manual ?? anchor ?? restored);
+
+  useEffect(() => {
+    if (total > 0 && anchor === null) setAnchor(restored);
+  }, [total, anchor, restored]);
 
   // Mede a área útil do corpo do leitor.
   useLayoutEffect(() => {
@@ -158,6 +175,8 @@ export default function PagedReader({
     const to = dir === "next" ? index + 1 : index - 1;
     if (to < 0 || to >= total) return;
     setManual(to);
+    // Com "reduzir movimento", a folha fica oculta: a página troca direto, sem bloqueio.
+    if (prefersReducedMotion()) return;
     setFlip({ from: index, to, dir });
     if (flipTimer.current) window.clearTimeout(flipTimer.current);
     flipTimer.current = window.setTimeout(() => setFlip(null), FLIP_MS);

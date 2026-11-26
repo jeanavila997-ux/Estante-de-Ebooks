@@ -24,6 +24,6 @@
   - PDF: cada página do documento é uma folha (`PdfReader.tsx`).
   - HTML e Markdown: o texto flui em colunas CSS da largura da folha e quebra linha a linha, sem páginas vazias.
   - Controles e progresso compartilhados em `components/reader/PagedReader.tsx`; animações em `tailwind.config.ts`.
-- `components/reader/ScrollReader.tsx` ficou sem uso e pode ser removido em uma mudança separada.
+- Removido `components/reader/ScrollReader.tsx`, que não tinha mais uso depois da paginação em colunas.
 - Não implementados nesta etapa: ganchos de 6 segundos e as duas pausas ativas (mini-teste e playground). Dependem de decisão sobre onde esse conteúdo entra nos ebooks.
 - Validado com `npm run typecheck` e `npm run build`, e no navegador com um `window.api` simulado (paginação, virada, PDF e layout de celular).
