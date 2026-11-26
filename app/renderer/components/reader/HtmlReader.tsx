@@ -1,13 +1,15 @@
 import { useMemo } from "react";
 import DOMPurify from "dompurify";
-import ScrollReader from "./ScrollReader";
+import PagedReader from "./PagedReader";
 
 export default function HtmlReader({
   content,
+  title,
   initialProgress,
   onProgress,
 }: {
   content: string;
+  title: string;
   initialProgress: number;
   onProgress: (percent: number) => void;
 }) {
@@ -22,9 +24,9 @@ export default function HtmlReader({
   );
 
   return (
-    <ScrollReader
+    <PagedReader
+      title={title}
       html={safe}
-      className="max-w-3xl mx-auto bg-card border-x border-border min-h-full px-10 py-8 reader-content"
       initialProgress={initialProgress}
       onProgress={onProgress}
     />

@@ -236,6 +236,11 @@ export default function CategoryPage() {
           );
         })}
       </div>
+
+      <p className="text-xs text-muted-foreground border-t border-border pt-3">
+        Material educativo, sem indicação de conduta. Converse com seu médico
+        antes de qualquer mudança.
+      </p>
     </div>
   );
 }

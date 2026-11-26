@@ -59,6 +59,10 @@ export default function Login() {
             Catalogue, organize e leia seus ebooks num só lugar. Status,
             categorias e leitor integrado — tudo offline.
           </p>
+          <p className="max-w-md text-xs text-primary-foreground/60 border-l-2 border-white/25 pl-2.5">
+            Conteúdo educativo. Não indicamos nem prescrevemos nada — a decisão
+            é única e exclusivamente do seu médico.
+          </p>
         </div>
         <div className="relative text-xs text-primary-foreground/60">
           v1.0 · uso local

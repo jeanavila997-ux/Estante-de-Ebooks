@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft, Info, Loader2 } from "lucide-react";
 import type { EbookContent } from "../../shared/types";
 import { Button } from "../components/ui/Button";
 import { api } from "../lib/api";
@@ -110,7 +110,7 @@ export default function EbookReader() {
         </div>
       </header>
 
-      <div className="flex-1 min-h-0 pb-0 md:pb-0">
+      <div className="flex flex-1 min-h-0 flex-col">
         {loading && (
           <div className="text-muted-foreground flex items-center justify-center gap-2 py-20">
             <Loader2 className="h-5 w-5 animate-spin" /> Carregando ebook...
@@ -135,6 +135,7 @@ export default function EbookReader() {
         {content && !error && content.format === "pdf" && (
           <PdfReader
             data={content.data as Uint8Array}
+            title={content.name}
             initialProgress={initialProgress}
             onProgress={handleProgress}
           />
@@ -142,6 +143,7 @@ export default function EbookReader() {
         {content && !error && content.format === "html" && (
           <HtmlReader
             content={content.data as string}
+            title={content.name}
             initialProgress={initialProgress}
             onProgress={handleProgress}
           />
@@ -149,10 +151,20 @@ export default function EbookReader() {
         {content && !error && content.format === "md" && (
           <MarkdownReader
             content={content.data as string}
+            title={content.name}
             initialProgress={initialProgress}
             onProgress={handleProgress}
           />
         )}
+      </div>
+
+      <div
+        role="note"
+        className="flex-none border-t border-border bg-card px-5 py-2 text-xs text-muted-foreground flex items-center gap-2"
+      >
+        <Info className="h-4 w-4 shrink-0" />
+        Leitura educativa. Não indicamos, não prescrevemos e não diagnosticamos
+        — a decisão é única e exclusivamente do seu médico.
       </div>
     </div>
   );
