@@ -101,12 +101,18 @@
   .reader-content blockquote {
     @apply border-l-4 border-accent pl-4 italic text-muted-foreground my-4;
   }
-  /* Paginação em colunas: imagens, tabelas e títulos não se partem entre páginas. */
-  .reader-columns img,
-  .reader-columns pre,
-  .reader-columns table,
-  .reader-columns figure,
-  .reader-columns blockquote {
+  /* Paginação em colunas: nenhum elemento passa da altura da página (--page-h). */
+  .reader-columns img {
+    max-height: var(--page-h);
+    object-fit: contain;
+    break-inside: avoid;
+  }
+  .reader-columns pre {
+    max-height: var(--page-h);
+    overflow: auto;
+    break-inside: avoid;
+  }
+  .reader-columns tr {
     break-inside: avoid;
   }
   .reader-columns h1,

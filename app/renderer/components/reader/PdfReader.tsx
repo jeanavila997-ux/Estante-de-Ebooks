@@ -23,7 +23,8 @@ export default function PdfReader({
   onProgress: (percent: number) => void;
 }) {
   const [numPages, setNumPages] = useState(0);
-  const [aspect, setAspect] = useState<number | null>(null);
+  // Proporção (largura/altura) de cada página, medida quando ela carrega.
+  const [aspects, setAspects] = useState<Record<number, number>>({});
   const [error, setError] = useState<string | null>(null);
 
   // pdf.js transfere o buffer para o worker (fica "detached"): entrega uma
@@ -50,7 +51,8 @@ export default function PdfReader({
         pageCount={numPages}
         renderPage={(i, box) => {
           // Cabe na folha inteira: largura limitada pela altura, pela proporção
-          // real da página (medida no carregamento).
+          // real desta página (cada página pode ter orientação diferente).
+          const aspect = aspects[i];
           const width = aspect
             ? Math.min(box.innerWidth, Math.floor(box.innerHeight * aspect))
             : box.innerWidth;
@@ -59,9 +61,12 @@ export default function PdfReader({
               <Page
                 pageNumber={i + 1}
                 width={width}
-                onLoadSuccess={(page) =>
-                  setAspect(page.originalWidth / page.originalHeight)
-                }
+                onLoadSuccess={(page) => {
+                  const ratio = page.originalWidth / page.originalHeight;
+                  setAspects((prev) =>
+                    prev[i] === ratio ? prev : { ...prev, [i]: ratio }
+                  );
+                }}
                 renderTextLayer
                 renderAnnotationLayer
               />

@@ -30,6 +30,18 @@ const SHEET_SHADOW =
   "0 10px 30px -12px rgba(0,0,0,.45), -10px 0 18px -14px rgba(0,0,0,.5) inset";
 const LEAF_SHADOW = "0 10px 30px -12px rgba(0,0,0,.45)";
 
+/** Estilo do fluxo de colunas: uma coluna por página, com altura da página em --page-h. */
+function columnStyle(w: number, h: number): CSSProperties {
+  return {
+    width: w,
+    height: h,
+    columnWidth: w,
+    columnGap: 0,
+    columnFill: "auto",
+    ["--page-h" as string]: `${h}px`,
+  } as CSSProperties;
+}
+
 export function pageBox(areaW: number, areaH: number): PageBox {
   const width = Math.max(260, Math.min(560, areaW - 32));
   const padding = width < 420 ? 24 : 40;
@@ -159,11 +171,7 @@ export default function PagedReader({
           <div
             className="reader-content reader-columns absolute left-0 top-0"
             style={{
-              width: w,
-              height: box.innerHeight,
-              columnWidth: w,
-              columnGap: 0,
-              columnFill: "auto",
+              ...columnStyle(w, box.innerHeight),
               transform: `translateX(${-i * w}px)`,
             }}
             dangerouslySetInnerHTML={{ __html: html }}
@@ -280,13 +288,7 @@ export default function PagedReader({
             <div
               ref={measureRef}
               className="reader-content reader-columns"
-              style={{
-                width: box.innerWidth,
-                height: box.innerHeight,
-                columnWidth: box.innerWidth,
-                columnGap: 0,
-                columnFill: "auto",
-              }}
+              style={columnStyle(box.innerWidth, box.innerHeight)}
               dangerouslySetInnerHTML={{ __html: html }}
             />
           </div>
